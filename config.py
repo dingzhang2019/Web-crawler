@@ -1,4 +1,4 @@
 
 
-username = 'freeding2019'
-password = 'xiaolanmei'
+username = 'xxxx'
+password = 'xxxx'
