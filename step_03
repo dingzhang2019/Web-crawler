@@ -1,0 +1,74 @@
+import requests
+import random
+import config
+
+# Keep the cookie
+session = requests.Session()
+
+# 1. Get the login page and cookie
+login_page_url = 'https://kyfw.12306.cn/otn/login/init'
+session.get(login_page_url)
+
+# 2. Download the authorization image
+captcha_url = 'https://kyfw.12306.cn/passport/captcha/captcha-image?login_site=E&module=login&rand=sjrand&%s' % str(random.random())
+captcha_response = session.get(captcha_url)
+with open('./images/captcha.jpg', 'wb') as f:
+    f.write(captcha_response.content)
+
+# 3. Check the authorization code
+
+# 8 image points
+point = {
+    '1': '35,43',
+    '2': '108,43',
+    '3': '185,43',
+    '4': '254,43',
+    '5': '34,117',
+    '6': '108,117',
+    '7': '180,117',
+    '8': '258,117',
+}
+
+def get_point(image_num):
+    """
+    Join image points
+    :param image_num: image title '1,2'
+    :return: the joined points of image '35,43,108,43'
+    """
+
+    image_num = image_num.split(',')
+    temp =[]
+
+    for item in image_num: # ['1','2']
+        temp.append(point[item])
+
+    return ','.join(temp)
+
+check_captcha_url = 'https://kyfw.12306.cn/passport/captcha/captcha-check'
+
+# Construct request parameters: dictionary data structure
+data = {
+    'answer': get_point(input('Please input the number of correct images>>>:')),
+    'login_site': 'E',
+    'rand': 'sjrand'
+}
+check_response = session.post(check_captcha_url, data=data)
+
+# Change json to dictionary
+check_res = check_response.json()
+print(check_res)
+
+if check_res['result_code'] != 4:
+    exit("authorization failed! Please retry.")
+
+# 4. Check username and password
+login_url = 'https://kyfw.12306.cn/passport/web/login'
+login_data = {
+    'username': config.username,
+    'password': config.password,
+    'appid': 'otn'
+}
+
+login_response = session.post(login_url,data=login_data)
+
+print(login_response.json())
