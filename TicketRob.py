@@ -131,8 +131,27 @@ class TicketRob:
         else:
             print("Wrong username or password! Please retry.")
             return False
+    
+    def query_left_ticket(self, train_date, from_station, to_station):
+        """Ticket query"""
+        
+        data = {
+            'leftTicketDTO.train_date': train_date,  # '2018-06-30',  # Date
+            'leftTicketDTO.from_station': from_station,  # 'BJP',  # From Station
+            'leftTicketDTO.to_station': to_station,  # 'SHH',  # Destination Station
+            'purpose_codes': 'ADULT' # ticket type
+        }
+        
+        response = self.session.get(self.left_tickets_url, params=data)
+        res = response.json()
+        if res['status']:
+            return res['data']['result']       
 
 
 if __name__ == '__main__':
     ticket = TicketRob()
-    print(ticket.log_in(config.username, config.password))
+    
+    # 1. Test the login method
+    # print(ticket.log_in(config.username, config.password))
+    
+    # 2. Test the ticket query method
