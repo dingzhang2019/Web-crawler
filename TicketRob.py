@@ -173,3 +173,5 @@ if __name__ == '__main__':
     # print(ticket.log_in(config.username, config.password))
     
     # 2. Test the ticket query method
+    # res = ticket.query_left_ticket('2018-06-01', station['北京'][2], station['上海'][2])
+    # print(res)   
