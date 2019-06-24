@@ -145,7 +145,25 @@ class TicketRob:
         response = self.session.get(self.left_tickets_url, params=data)
         res = response.json()
         if res['status']:
-            return res['data']['result']       
+            return res['data']['result']   
+
+    
+    def submit_order(self, secretstr):
+        """Submit order process"""
+        
+        data = {
+            'secretStr':secretstr,
+            'train_date': '2018-07-01',
+            'back_train_date': '2018-06-28',
+            'tour_flag': 'dc',
+            'purpose_codes': 'ADULT',
+            'query_from_station_name': 'Beijing',
+            'query_to_station_name': 'Shanghai',
+            'undefined':''
+        }
+        response = self.session.post(self.submit_order_url, data=data)
+        print(response.text)
+        # {"validateMessagesShowId":"_validatorMessage","status":true,"httpstatus":200,"data":"N","messages":[],"validateMessages":{}}        
 
 
 if __name__ == '__main__':
